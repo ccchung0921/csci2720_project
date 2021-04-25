@@ -14,11 +14,11 @@ app.use(cors())
 const dbURL = "mongodb+srv://cluster0.pedjk.mongodb.net/chung" ;
 
 //Config of my db 
-var options = {
-            user: 'ccchung0921',
-            pass: 'a54255875221',
-            dbName: 'chung'
-        }
+// var options = {
+//             user: 'ccchung0921',
+//             pass: 'a54255875221',
+//             dbName: 'chung'
+//         }
 
 mongoose.connect(dbURL,options);
 
