@@ -17,7 +17,6 @@ import {Alert} from 'react-bootstrap'
 export function SignupForm(props) {
   const { switchToSignin } = useContext(AccountContext);
   const errors = useSelector((state)=> state.auth.errors);
-  const [formError,setFormError] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
   const [form,setForm] = useState({
@@ -56,7 +55,6 @@ export function SignupForm(props) {
 
   return (
     <BoxContainer>
-<<<<<<< HEAD
       <FormContainer onSubmit={onSubmitHandler}>
         <Input name="fullName" type="text" placeholder="Full Name" onChange={onChangeHandler} required />
         <Input name="username" type="email" placeholder="Email" onChange={onChangeHandler} required/>
@@ -66,16 +64,6 @@ export function SignupForm(props) {
       </FormContainer>
       <Marginer direction="vertical" margin={15} />
       <SubmitButton disabled={lengthInvalid} onClick={()=> document.getElementById('signup').click()} type="submit">Signup</SubmitButton>
-=======
-      <FormContainer>
-        <Input type="text" placeholder="Full Name" />
-        <Input type="email" placeholder="Email Address" />
-        <Input type="password" placeholder="Password" />
-        <Input type="password" placeholder="Confirm Password" />
-      </FormContainer>
-      <Marginer direction="vertical" margin={15} />
-      <SubmitButton type="submit">SignUp</SubmitButton>
->>>>>>> 66fd4f52201914e02d7a4ae3a677ca87268a70c9
       <Marginer direction="vertical" margin="1em" />
       <MutedLink href="#">
         Already have an account?
