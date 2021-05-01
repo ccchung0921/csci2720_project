@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
 const moment = require('moment');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 
@@ -32,6 +33,7 @@ db.once('open',()=>{
 })
 
 var Place = require('./models/Place');
+var User = require('./models/user');
 
 app.get('/places',async (req,res)=>{
     try{
@@ -106,15 +108,39 @@ app.get('/historicaldays/:name',async(req,res)=>{
     }
 })
 
-
-app.post('/places',async (req,res)=>{
-    const place = req.body;
-    const newPlace = new Place(place);
+app.post('/signup',async(req,res) =>{
+    const {username,password,confirmPassword,fullName} = req.body;
+    console.log(username)
     try{
-     await newPlace.save()
-     res.status(201).json(newPlace)
+        const existingUser = await User.findOne({username});
+        if (existingUser) return res.status(401).json({message:"User already exist"});
+        if (password !== confirmPassword) return res.status(402).json({messgae:'Password does not match'});
+        const hashedPassword = await bcrypt.hash(password,12);
+        const result = await User.create({
+            username,
+            password: hashedPassword,
+            fullName,
+        })
+        res.status(200).json(result);
     }catch(err){
-     res.status(404).json({messgae: err.message});
+        console.log(err)
+        res.status(505).json({message: "Something went wrong"});
+    }
+})
+
+
+
+app.post('/signin',async(req,res) =>{
+    const {username,password} = req.body;
+    try{
+        const existingUser = await User.findOne({username});
+        if (!existingUser) return res.status(401).json({message:"User does not exist"});
+        const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
+        if (!isPasswordCorrect) return res.status(400).json({message:"Invalid Credentials"});
+        res.status(200).json(existingUser);
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message: "Something went wrong"});
     }
 })
 

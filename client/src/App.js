@@ -5,6 +5,7 @@ import NavbarComponent from './components/Navbar';
 import {BrowserRouter as Router, Route,Switch} from 'react-router-dom';
 import styled from "styled-components";
 import { AccountBox } from "./components/accountBox";
+import PrivateRoute from './routes/PrivateRoute';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -15,18 +16,24 @@ const AppContainer = styled.div`
   justify-content: center;
 `;
 
+const AuthComponenet = () =>{
+  return(
+    <AppContainer>
+      <AccountBox />
+    </AppContainer>
+  )
+}
+
 
 function App() {
   return (
     <>
     <NavbarComponent />
     <Router>
-    <AppContainer>
-      <AccountBox />
-    </AppContainer>
       <Switch>
+        <Route path='/login' component={AuthComponenet} />
         <Route path='/place/:id' component={PlaceDetail} />
-        <Route path='/' component={MainPage} />
+        <PrivateRoute exact path='/' comp={MainPage} />
       </Switch>
     </Router>
     </>
