@@ -23,3 +23,7 @@ export const removeFavourite = (id,place) => API.post(`/favourite/remove/${id}`,
 export const addComment = (comment) => API.post('/comment',comment);
 
 export const getComment = (id) => API.get(`/comment/place/${id}`);
+
+export const getUserComment = (id) => API.get(`/comment/user/${id}`);
+
+export const getUserinfo = (id) => API.get(`/user/${id}`);

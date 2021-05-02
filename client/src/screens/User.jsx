@@ -2,6 +2,8 @@ import React from 'react';
 import {ListGroup, Row, Col, Tab} from 'react-bootstrap';
 import useWindowDimensions from '../hook/useWindowDimensions';
 import MyFavourite from './MyFavourite';
+import UserComment from './UserComment'
+import UserInfo from './UserInfo';
 
 const User = () =>{
     const {width} = useWindowDimensions();
@@ -25,13 +27,13 @@ const User = () =>{
                 <Col sm={8}>
                 <Tab.Content className="ml-5">
                 <Tab.Pane eventKey="#link1">
-                        
+                      <UserInfo width={width} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="#link2">
                       <MyFavourite />
                     </Tab.Pane>
                     <Tab.Pane eventKey="#link3">
-              
+                      <UserComment />
                     </Tab.Pane>
                 </Tab.Content>
                 </Col>

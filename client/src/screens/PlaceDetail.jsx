@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useEffect,useCallback} from 'react';
 import {useParams} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux'
 import Map from '../components/Map'
@@ -9,18 +9,21 @@ import {fetchHistoricalTime,fetchHistoricalDays} from '../actions/historical'
 import Chart from './Chart'
 import DayChart from './DayChart'
 import CommentSection from './CommentSection';
+import {getFavouritePlaces,AddToFavourite,RemoveFromFavourite} from '../actions/favourite'
 
-
-const PlaceDetail = ({location}) =>{
+const PlaceDetail = () =>{
     const {id} = useParams();
     const {width} = useWindowDimensions();
     const dispatch = useDispatch();
     const places = useSelector((state)=> state.places);
     const hours = useSelector((state)=> state.historical.hours);
     const days = useSelector((state)=> state.historical.days);
+    const favourite = useSelector((state)=>state.favourite);
     const filterPlace = places.filter((place)=> place._id === id);
     const place = filterPlace[0];
+    const userId = JSON.parse(localStorage.getItem('auth'))._id;
 
+    
     useEffect(()=>{
        dispatch(fetchHistoricalTime(place.name));
     },[dispatch])
@@ -29,6 +32,12 @@ const PlaceDetail = ({location}) =>{
       dispatch(fetchHistoricalDays(place.name));
     },[dispatch])
 
+    useEffect(()=>{
+        dispatch(getFavouritePlaces(userId));
+    },[dispatch])
+
+    const matchFavourite = useCallback((id)=> favourite.places.filter((place)=>place._id === id).length > 0,[favourite.places]);
+
     return(
         <div className="d-flex flex-column align-items-center my-4" >
             <Map places={filterPlace} />
@@ -36,10 +45,11 @@ const PlaceDetail = ({location}) =>{
                 <Card.Title>    
                     <div className="d-flex justify-content-between">
                         {place && place.name}
-                        {location.state.favourite?
-                        <MdFavorite className="logoButton mr-3" color="red" size={24} onClick={()=>console.log('yo')}/>
+                        {
+                        matchFavourite(place._id)?
+                        <MdFavorite className="logoButton mr-3" color="red" size={24} onClick={()=>dispatch(RemoveFromFavourite(userId,{'placeId': place._id}))}/>
                             :
-                        <MdFavoriteBorder className="logoButton mr-3" color="red" size={24} onClick={()=>console.log('yo')}/>
+                        <MdFavoriteBorder className="logoButton mr-3" color="red" size={24} onClick={()=>dispatch(AddToFavourite(userId,{'placeId': place._id}))}/>
                         }
                     </div>
                 </Card.Title>

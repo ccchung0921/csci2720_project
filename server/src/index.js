@@ -178,6 +178,31 @@ app.get('/comment/place/:id',async(req,res)=>{
     }
 })
 
+app.get('/user/:id',async(req, res) =>{
+    try{
+        const {id} = req.params;
+        const user = await User.findById(id);
+        if(!user) return res.status(404).json({message:"User does not exist."});
+        res.status(200).json(user);
+    }catch(err){
+        res.status(500).json({message:"Something went wrong."});
+    }
+})
+
+
+app.get('/comment/user/:id',async(req,res)=>{
+    try{
+        const {id:_id} = req.params;
+        if (! mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No request with that id');
+        const comments = await Comment.find({"creator":_id}).populate({path:'place',model:Place}).populate({path:'creator',model:User}).sort({"createdAt": -1 }).exec();
+        res.status(200).json(comments)
+    }catch(err){
+        console.log(err)
+        res.status(404).json({message: err.message})
+    }
+})
+
+
 app.post('/comment',async(req,res)=>{
     const comment = req.body;
     const newComment = new Comment(comment);

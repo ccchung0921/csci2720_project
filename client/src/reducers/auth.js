@@ -1,4 +1,4 @@
-const authReducer = (state = { authData: null,errors:null}, action) => {
+const authReducer = (state = { authData: null,userInfo:null,errors:null}, action) => {
     switch (action.type) {
       case 'AUTH':
         localStorage.setItem('auth',JSON.stringify({ ...action?.payload }));
@@ -8,6 +8,8 @@ const authReducer = (state = { authData: null,errors:null}, action) => {
         return {...state, authData: null, errors: null };
       case 'AUTH_FAIL':
         return {...state, errors: action.payload};
+      case 'GET_INFO':
+        return {...state,userInfo:action.payload};
       default:
         return state;
     }
