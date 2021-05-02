@@ -8,9 +8,10 @@ import {MdFavoriteBorder,MdFavorite} from 'react-icons/md'
 import {fetchHistoricalTime,fetchHistoricalDays} from '../actions/historical'
 import Chart from './Chart'
 import DayChart from './DayChart'
+import CommentSection from './CommentSection';
 
 
-const PlaceDetail = () =>{
+const PlaceDetail = ({location}) =>{
     const {id} = useParams();
     const {width} = useWindowDimensions();
     const dispatch = useDispatch();
@@ -21,11 +22,11 @@ const PlaceDetail = () =>{
     const place = filterPlace[0];
 
     useEffect(()=>{
-        dispatch(fetchHistoricalTime(place.name));
+       dispatch(fetchHistoricalTime(place.name));
     },[dispatch])
 
     useEffect(()=>{
-        dispatch(fetchHistoricalDays(place.name));
+      dispatch(fetchHistoricalDays(place.name));
     },[dispatch])
 
     return(
@@ -34,32 +35,36 @@ const PlaceDetail = () =>{
             <Card className="my-4 p-3" style={{width : width*0.6}}>
                 <Card.Title>    
                     <div className="d-flex justify-content-between">
-                        {place.name}
-                        <MdFavoriteBorder className="logoButton mr-3" size={24} onClick={()=>console.log('yo')}/>
+                        {place && place.name}
+                        {location.state.favourite?
+                        <MdFavorite className="logoButton mr-3" color="red" size={24} onClick={()=>console.log('yo')}/>
+                            :
+                        <MdFavoriteBorder className="logoButton mr-3" color="red" size={24} onClick={()=>console.log('yo')}/>
+                        }
                     </div>
                 </Card.Title>
                 <Card.Body>
                     <Row>
-                        <Col lg={7}>
+                        <Col sm={7}>
                             <Card.Text className="font-weight-bold">
                                Waiting Time
                             </Card.Text>
                         </Col>
-                        <Col lg={5}>
+                        <Col sm={5}>
                             <Card.Text className="d-flex justify-content-end">
-                                {place.waiting_time}
+                                {place && place.waiting_time}
                             </Card.Text>
                         </Col>
                     </Row>
                     <Row>
-                        <Col lg={7}>
+                        <Col sm={7}>
                             <Card.Text className="font-weight-bold">
                                Update Time
                             </Card.Text>
                         </Col>
-                        <Col lg={5}>
+                        <Col sm={5}>
                             <Card.Text className="d-flex justify-content-end">
-                                {place.updateTime}
+                                {place && place.updateTime}
                             </Card.Text>
                         </Col>
                     </Row>
@@ -67,6 +72,7 @@ const PlaceDetail = () =>{
             </Card>
             <Chart graphData={hours} title="Waiting time in the past 10 hours"/>
             <DayChart graphData={days} title="Waiting time in this hour of past 7 days"/>
+            <CommentSection placeId={place._id} width={width}/>
         </div>
     )
 }

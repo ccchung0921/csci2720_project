@@ -2,7 +2,7 @@ import React,{useMemo} from 'react';
 import {Navbar} from 'react-bootstrap';
 import {useSelector,useDispatch} from 'react-redux';
 import {RiLogoutBoxLine} from 'react-icons/ri'
-
+import {Link} from 'react-router-dom'
 
 const NavbarComponent = () => {
     const authData = useSelector((state)=> state.auth.authData);
@@ -19,9 +19,9 @@ const NavbarComponent = () => {
                </Navbar.Collapse>
                <Navbar.Brand className="d-flex ml-auto mr-auto" style={{color:'white'}}  href="/">Hospital Waiting Time</Navbar.Brand>
                <Navbar.Collapse className="justify-content-end">
-                <Navbar.Text style={{color:'white'}}>
+                <Link className="nav-link" as={Link} to="/profile" style={{color:'white'}}>
                     {username}
-                </Navbar.Text>
+                </Link>
                </Navbar.Collapse>
         </Navbar>
     )

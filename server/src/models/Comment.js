@@ -1,11 +1,13 @@
 var mongoose = require('mongoose');
 
 var CommentSchema = mongoose.Schema({
-comment_id: { type: String, required: true,
-unique: true },
-user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-place: { type: mongoose.Schema.Types.ObjectId, ref: 'places' },
-content: { type: String, required: true }
+creator: {type: mongoose.Schema.Types.ObjectId, ref: 'User' ,required: true},
+place: {type: mongoose.Schema.Types.ObjectId, ref: 'places' ,required:true},
+content: { type: String, required: true },
+createdAt:{
+    type: Date,
+    required:true
+}
 },{collection:'comments'});
 
 

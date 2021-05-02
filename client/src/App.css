@@ -2,7 +2,12 @@
   text-align: center;
 }
 
-.logout:hover{
+.list-group-item.active {
+  background-color:rgb(241, 196, 15);
+  border-color:rgb(241, 196, 15);
+}
+
+.logout,.logoButton,.textButton:hover{
   cursor: pointer;
 }
 

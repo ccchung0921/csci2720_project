@@ -13,3 +13,13 @@ export const fetchWaitingTime = () => API.get('/waitingtime');
 export const fetchHistoricalTime = (name) => API.get(`/historicaltime/${name}`)
 
 export const fetchHistoricalDays = (name) => API.get(`/historicaldays/${name}`)
+
+export const fetchFavourite = (id) => API.get(`/favourite/${id}`);
+
+export const addFavourite = (id,place) => API.post(`/favourite/add/${id}`,place)
+
+export const removeFavourite = (id,place) => API.post(`/favourite/remove/${id}`,place)
+
+export const addComment = (comment) => API.post('/comment',comment);
+
+export const getComment = (id) => API.get(`/comment/place/${id}`);

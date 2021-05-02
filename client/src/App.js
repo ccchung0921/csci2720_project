@@ -6,6 +6,7 @@ import {BrowserRouter as Router, Route,Switch} from 'react-router-dom';
 import styled from "styled-components";
 import { AccountBox } from "./components/accountBox";
 import PrivateRoute from './routes/PrivateRoute';
+import User from './screens/User'
 
 const AppContainer = styled.div`
   width: 100%;
@@ -28,11 +29,12 @@ const AuthComponenet = () =>{
 function App() {
   return (
     <>
-    <NavbarComponent />
     <Router>
+      <NavbarComponent />
       <Switch>
         <Route path='/login' component={AuthComponenet} />
-        <Route path='/place/:id' component={PlaceDetail} />
+        <PrivateRoute path='/place/:id' comp={PlaceDetail} />
+        <PrivateRoute path='/profile' comp={User} />
         <PrivateRoute exact path='/' comp={MainPage} />
       </Switch>
     </Router>

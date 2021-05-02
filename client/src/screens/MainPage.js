@@ -1,5 +1,5 @@
-import React,{useEffect,useState,useMemo} from 'react';
-import {Button,Table,Form,Dropdown} from 'react-bootstrap'
+import React,{useEffect,useState,useMemo,useCallback} from 'react';
+import {Button,Table,Form,Dropdown,Spinner} from 'react-bootstrap'
 import Map from '../components/Map'
 import useWindowDimensions from '../hook/useWindowDimensions'
 import {getPlaces,getAsc,getDesc,getFilter} from '../actions/place'
@@ -7,6 +7,8 @@ import {useDispatch,useSelector} from 'react-redux'
 import {GoSearch} from 'react-icons/go'
 import {MdFavoriteBorder,MdFavorite} from 'react-icons/md';
 import {useHistory} from 'react-router-dom';
+import {getFavouritePlaces,AddToFavourite,RemoveFromFavourite} from '../actions/favourite'
+
 
 const MainPage = () =>{
 
@@ -17,27 +19,45 @@ const MainPage = () =>{
     const {height,width} = useWindowDimensions();
     const dispatch = useDispatch();
     const places = useSelector((state)=> state.places);
-   
+    const favourite = useSelector((state)=>state.favourite);
+    const userId = JSON.parse(localStorage.getItem('auth'))._id;
+
     useEffect(()=>{
         dispatch(getPlaces());
     },[dispatch])
 
+    useEffect(()=>{
+        dispatch(getFavouritePlaces(userId));
+    },[dispatch])
+
+    const matchFavourite = useCallback((id)=> favourite.places.filter((place)=>place._id === id).length > 0,[favourite.places]);
+
     const getPlaceTable = () => {
         return places.map((place,i)=>
-        (
-            <tr key={place._id} onClick={()=>history.push(`/place/${place._id}`)}>
+         (
+            <tr key={place._id} >
                         <td>{i+1}</td>
-                        <td>{place.name}</td>
+                        <td className="textButton" onClick={()=>history.push(`/place/${place._id}`, {favourite:matchFavourite(place._id)})}>{place.name}</td>
                         <td>{place.waiting_time}</td>
-                        <td><MdFavoriteBorder className='logoButton' size={22} /></td>
+                        {   favourite.loading ?
+                            <Spinner animation="border" variant="info"  role="status">
+                                <span className="sr-only" >Loading...</span>
+                            </Spinner>
+                            :
+                            matchFavourite(place._id)?
+                            <td><MdFavorite className='logoButton' color="red" onClick={()=> dispatch(RemoveFromFavourite(userId,{'placeId': place._id}))} size={22} /></td>
+                            :
+                            <td><MdFavoriteBorder className='logoButton' color="red" onClick={()=> dispatch(AddToFavourite(userId,{'placeId': place._id}))}size={22} /></td>
+                        }
             </tr>
-        ) 
+        )
      )
     }
     
-    const placeTable = useMemo(()=> getPlaceTable(),[places,desc,dispatch]);
+    const placeTable = useMemo(()=> getPlaceTable(),[places,desc,dispatch,favourite.places]);
 
-    const onChangeHandler = (e) =>{
+
+    const onChangeHandler = (e) =>{ 
         const {value} = e.target;
         setState(value);
     }

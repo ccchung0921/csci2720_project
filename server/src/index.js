@@ -34,6 +34,7 @@ db.once('open',()=>{
 
 var Place = require('./models/Place');
 var User = require('./models/user');
+var Comment = require('./models/Comment');
 
 app.get('/places',async (req,res)=>{
     try{
@@ -48,7 +49,6 @@ app.get('/places',async (req,res)=>{
 app.get('/waitingtime',async (req,res)=>{
     try{
         const {data} = await axios.get('https://www.ha.org.hk/opendata/aed/aedwtdata-en.json')
-        console.log(data)
         res.status(200).json(data);
     }catch(err){
         res.status(404).send({message: err.message})
@@ -90,7 +90,7 @@ app.get('/historicaldays/:name',async(req,res)=>{
             const previousDays = now.setDate(now.getDate() - (i+1));
             const formatPreviousHour = moment(previousDays).format('YYYY/MM/DD');
             const formatPreviousTime = moment(previousDays).format('HHmm');
-            const formatHour = parseInt(formatPreviousTime.substring(0,2));
+            const formatHour = formatPreviousTime.substring(0,2);
             const formatMinutes = parseInt(formatPreviousTime.substring(2,4));
             let time = Math.floor(formatMinutes/15)*15
             time = time < 10 ? '0'+ time.toString() : time.toString()
@@ -104,6 +104,7 @@ app.get('/historicaldays/:name',async(req,res)=>{
         })
         Promise.all(promises).then((data)=> res.status(200).json(data));
     }catch(err){
+        console.log(err)
         res.status(404).send({message: err.message})
     }
 })
@@ -128,6 +129,65 @@ app.post('/signup',async(req,res) =>{
     }
 })
 
+app.get('/favourite/:id',async(req,res)=>{
+    try{
+        const {id} = req.params;
+        const places = await User.findById(id).populate({path:'favourite_places',model:Place});
+        res.status(200).json(places);
+    }catch(err){
+        console.log(err)
+        res.status(404).json({message:err.message})
+    }
+})
+
+app.post('/favourite/add/:id',async(req,res)=>{
+    try{
+        const {id:_id} = req.params;
+        const {placeId} = req.body;
+        if ( !mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No request with that id');
+        const update = await User.findByIdAndUpdate(_id, {$push:{favourite_places : placeId}}, {new:true}).populate({path:'favourite_places',model:Place});
+        res.status(200).json(update);
+    }catch(err){
+        console.log(err)
+        res.status(404).json({message: err.message});
+    }
+})
+
+app.post('/favourite/remove/:id',async(req,res)=>{
+    try{
+        const {id:_id} = req.params;
+        const {placeId} = req.body;
+        if ( !mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No request with that id');
+        const update = await User.findByIdAndUpdate(_id, {$pull:{favourite_places : placeId}}, {new:true}).populate({path:'favourite_places',model:Place});
+        res.status(200).json(update);
+    }catch(err){
+        console.log(err)
+        res.status(404).json({message: err.message});
+    }
+})
+
+app.get('/comment/place/:id',async(req,res)=>{
+    try{
+        const {id:_id} = req.params;
+        if (! mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No request with that id');
+        const comments = await Comment.find({"place":_id}).populate({path:'place',model:Place}).populate({path:'creator',model:User}).sort({"createdAt": -1 }).exec();
+        res.status(200).json(comments)
+    }catch(err){
+        console.log(err)
+        res.status(404).json({message: err.message})
+    }
+})
+
+app.post('/comment',async(req,res)=>{
+    const comment = req.body;
+    const newComment = new Comment(comment);
+    try{
+        await newComment.save().then(async(c) =>res.status(201).json(await c.populate({path:'creator',model:User}).execPopulate()))
+    }catch(err){
+        console.log(err)
+        res.status(404).json({messgae: err.message})
+    }
+})
 
 
 app.post('/signin',async(req,res) =>{
