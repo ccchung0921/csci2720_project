@@ -14,21 +14,27 @@ const MainPage = () =>{
 
     const [state,setState] = useState('');
     const history = useHistory();
-   // const [filter,setFilter] = useState(null);
     const [desc,setDesc] = useState(null);
+    const [refresh,setRefresh] = useState(0)
     const {height,width} = useWindowDimensions();
     const dispatch = useDispatch();
     const places = useSelector((state)=> state.places);
     const favourite = useSelector((state)=>state.favourite);
-    const userId = JSON.parse(localStorage.getItem('auth'))._id;
-
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    const userId = auth?._id;
+    const isAdmin = useMemo(()=> auth != null && auth?.isAdmin);
+    
     useEffect(()=>{
         dispatch(getPlaces());
-    },[dispatch])
+    },[dispatch,refresh])
 
     useEffect(()=>{
         dispatch(getFavouritePlaces(userId));
     },[dispatch])
+
+    const detectLogout = useCallback(()=>{
+        history.push('/login')
+    },[auth])
 
     const matchFavourite = useCallback((id)=> favourite.places.filter((place)=>place._id === id).length > 0,[favourite.places]);
 
@@ -56,6 +62,10 @@ const MainPage = () =>{
     
     const placeTable = useMemo(()=> getPlaceTable(),[places,desc,dispatch,favourite.places]);
 
+    const refreshHandler = () =>{
+        setRefresh((prev) => prev + 1)
+        console.log(refresh)
+    }
 
     const onChangeHandler = (e) =>{ 
         const {value} = e.target;
@@ -109,6 +119,7 @@ const MainPage = () =>{
                 </tbody>
             </Table>
            <div>Last updated at {places.length > 0 ? places[0].updateTime : null}</div> 
+          { isAdmin && <Button variant="success" className="my-4 mb-4" onClick={refreshHandler} >Refresh</Button> }
        </div>
     )
 }

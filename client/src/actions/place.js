@@ -16,6 +16,42 @@ export const getPlaces = () => async (dispatch) =>{
     }
 }
 
+export const adminGetPlaces = () => async (dispatch) =>{
+    try{
+        let {data} = await api.fetchPlaces()
+        dispatch({type: 'FETCH_ALL',payload : data})
+    }catch(error){
+        console.log(error);
+    }
+}
+
+export const adminAddPlaces = (place) => async(dispatch) =>{
+    try{
+        let {data} = await api.addPlaces(place);
+        dispatch({type:'ADD_PLACE',payload:data});
+    }catch(err){
+        console.log(err)
+    }
+}
+
+export const adminDeletePlace = (id) => async(dispatch) =>{
+    try{
+        await api.deletePlace(id);
+        dispatch({type:'DELETE_PLACE',payload:id});
+    }catch(err){
+        console.log(err);
+    }
+}
+
+export const adminUpdatePlace = (id,updated) => async(dispatch) =>{
+    try{
+        const {data} = await api.updatePlace(id,updated);
+        dispatch({type:'UPDATE_PLACE',payload:data});
+    }catch(err){
+        console.log(err);
+    }
+}
+
 export const getAsc = () => async(dispatch) => dispatch({type: 'GET_ASC'})
 export const getDesc = () => async(dispatch) => dispatch({type: 'GET_DESC'})
 export const getFilter = (filter) => async(dispatch) => dispatch({type: 'GET_FILTER',payload:filter})

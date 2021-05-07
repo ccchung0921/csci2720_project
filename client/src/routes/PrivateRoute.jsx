@@ -1,4 +1,4 @@
-import React,{useMemo, Component} from 'react';
+import React,{useMemo} from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {useSelector} from 'react-redux'
 

@@ -36,14 +36,97 @@ var Place = require('./models/Place');
 var User = require('./models/user');
 var Comment = require('./models/Comment');
 
+app.post('/place', async(req,res) =>{
+    const place = req.body;
+    const newPlace = new Place(place);
+    try{
+     await newPlace.save()
+     res.status(201).json(newPlace)
+    }catch(err){
+     res.status(404).json({messgae: err.message});
+    }
+})
+
+app.patch('/place/:id', async(req,res) =>{
+    try{
+        const {id:_id} = req.params;
+        const accept = req.body;
+        if (! mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No request with that id');
+        const updatedPlace = await Place.findByIdAndUpdate(_id, {...accept, _id},{new:true});
+        res.json(updatedPlace);
+    }catch(err){
+        res.status(404).json({message: err.message});
+    }
+})
+
+
+app.delete('/place/:id', async(req,res)=>{
+    const {id} = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('No place with that id');
+    await Place.findByIdAndRemove(id);
+    res.json({message: 'Place deleted successfully'});
+})
+
+
 app.get('/places',async (req,res)=>{
     try{
         const places = await Place.find();
-        console.log(places)
         res.status(200).json(places);
     }catch(err){
         res.status(404).send({message: err.message})
     }
+})
+
+app.get('/users',async(req,res)=>{
+    try{
+        const users = await User.find();
+        res.status(200).json(users);
+    }catch(err){
+        res.status(404).send({message: err.message})
+    }
+})
+
+app.post('/user', async(req,res) =>{
+    const {username,password,confirmPassword,fullName,isAdmin} = req.body;
+    try{
+        const existingUser = await User.findOne({username});
+        if (existingUser) return res.status(401).json({message:"User already exist"});
+        if (password !== confirmPassword) return res.status(402).json({messgae:'Password does not match'});
+        const hashedPassword = await bcrypt.hash(password,12);
+        const result = await User.create({
+            username,
+            password: hashedPassword,
+            fullName,
+            isAdmin
+        })
+        res.status(200).json(result);
+    }catch(err){
+        console.log(err)
+        res.status(505).json({message: "Something went wrong"});
+    }
+})
+
+app.patch('/user/:id', async(req,res) =>{
+    try{
+        const {id:_id} = req.params;
+        let update = req.body;
+        if ("password" in update){
+            const hashedPassword = await bcrypt.hash(update.password,12);
+            update = {...update,password: hashedPassword};
+        }
+        if (! mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No request with that id');
+        const updatedUser= await User.findByIdAndUpdate(_id, {...update, _id},{new:true});
+        res.json(updatedUser);
+    }catch(err){
+        res.status(404).json({message: err.message});
+    }
+})
+
+app.delete('/user/:id', async(req,res)=>{
+    const {id} = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('No place with that id');
+    await User.findByIdAndRemove(id);
+    res.json({message: 'Place deleted successfully'});
 })
 
 app.get('/waitingtime',async (req,res)=>{
@@ -111,7 +194,6 @@ app.get('/historicaldays/:name',async(req,res)=>{
 
 app.post('/signup',async(req,res) =>{
     const {username,password,confirmPassword,fullName} = req.body;
-    console.log(username)
     try{
         const existingUser = await User.findOne({username});
         if (existingUser) return res.status(401).json({message:"User already exist"});

@@ -27,3 +27,17 @@ export const getComment = (id) => API.get(`/comment/place/${id}`);
 export const getUserComment = (id) => API.get(`/comment/user/${id}`);
 
 export const getUserinfo = (id) => API.get(`/user/${id}`);
+
+export const addPlaces = (place) => API.post('place',place);
+
+export const deletePlace = (id) => API.delete(`place/${id}`);
+
+export const updatePlace = (id,updated) => API.patch(`place/${id}`,updated);
+
+export const getUsers = () => API.get('users');
+
+export const addUser = (user) => API.post('user',user);
+
+export const deleteUser = (id) => API.delete(`user/${id}`);
+
+export const updateUser = (id,updated) => API.patch(`user/${id}`,updated);

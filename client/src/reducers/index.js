@@ -4,6 +4,7 @@ import historical from './historical';
 import auth from './auth';
 import favourite from './favourite';
 import comment from './comment';
+import users from './user';
 
 export default combineReducers({
     places,
@@ -11,4 +12,5 @@ export default combineReducers({
     auth,
     favourite,
     comment,
+    users,
 })

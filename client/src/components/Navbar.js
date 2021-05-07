@@ -1,5 +1,5 @@
 import React,{useMemo} from 'react';
-import {Navbar} from 'react-bootstrap';
+import {Nav,Navbar} from 'react-bootstrap';
 import {useSelector,useDispatch} from 'react-redux';
 import {RiLogoutBoxLine} from 'react-icons/ri'
 import {Link} from 'react-router-dom'
@@ -9,19 +9,25 @@ const NavbarComponent = () => {
     const dispatch = useDispatch();
     const auth = JSON.parse(localStorage.getItem('auth'));
     const isAuth = authData != null || auth != null;
-    const username = useMemo(()=> authData != null ? authData.username : auth != null? auth.username :'',[authData]);
+    const username = useMemo(()=> authData != null ? authData.username : auth != null? auth.username :'',[authData,window.location]);
+    const isAdmin = useMemo(()=> authData != null? authData.isAdmin : auth != null? auth.isAdmin :false,[authData,window.location]);
     return(
         <Navbar style={{backgroundColor:'rgb(241, 196, 15)'}} collapseOnSelect className="d-flex justify-content-center" expand="lg" sticky='top'>
-               <Navbar.Collapse className="justify-content-start">
-                <Navbar.Text style={{color:'white'}}>
-                 {isAuth && <RiLogoutBoxLine size={24} className="logout" onClick={()=> dispatch({type:'LOGOUT'})} />}
-                </Navbar.Text>
-               </Navbar.Collapse>
-               <Navbar.Brand className="d-flex ml-auto mr-auto" style={{color:'white'}}  href="/">Hospital Waiting Time</Navbar.Brand>
-               <Navbar.Collapse className="justify-content-end">
-                <Link className="nav-link" as={Link} to="/profile" style={{color:'white'}}>
-                    {username}
-                </Link>
+               <Navbar.Brand style={{color:'white'}}  href="/">Hospital Waiting Time</Navbar.Brand>
+               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+               <Navbar.Collapse id="responsive-navbar-nav">
+               <Nav className="ml-auto">
+                    <Link className="nav-link" as={Link} to="/profile" style={{color:'white'}}>
+                        {username}
+                    </Link>
+                    {isAdmin? <Link  className="nav-link" as={Link} to="/manage" style={{color:'white'}}>
+                            Manage
+                        </Link>
+                    :null}
+                    <Link style={{color:'white'}}>
+                    {isAuth &&  <Link className="nav-link" as={Link} onClick={()=> dispatch({type:'LOGOUT'})} to="/login" style={{color:'white'}}><RiLogoutBoxLine size={24} className="logout"  /></Link>}
+                    </Link>
+                </Nav>
                </Navbar.Collapse>
         </Navbar>
     )

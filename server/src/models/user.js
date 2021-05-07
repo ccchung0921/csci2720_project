@@ -6,7 +6,7 @@ unique: true },
 password: { type: String, required: true },
 fullName:{type:String,required:true},
 favourite_places: { type: [{type:mongoose.Schema.Types.ObjectId,ref:"places"}],default:[] },
-role: {type:String, required:true, default:"user"},
+isAdmin: {type:Boolean, required:true, default:false },
 },{collection:'user'});
 
 
