@@ -8,7 +8,7 @@ import {GoSearch} from 'react-icons/go'
 import {MdFavoriteBorder,MdFavorite} from 'react-icons/md';
 import {useHistory} from 'react-router-dom';
 import {getFavouritePlaces,AddToFavourite,RemoveFromFavourite} from '../actions/favourite'
-
+import RecordPagination from '../components/Pagination';
 
 const MainPage = () =>{
 
@@ -24,6 +24,11 @@ const MainPage = () =>{
     const userId = auth?._id;
     const isAdmin = useMemo(()=> auth != null && auth?.isAdmin);
     const [field,setField] = useState('name');
+    const [currentPage,setCurrentPage] = useState(1);
+    const recordPerPage = 3;
+    const indexOfLastRecord = currentPage * recordPerPage;
+    const indexOfFirstRecord = indexOfLastRecord - recordPerPage;
+    const currentPlaces = places.slice(indexOfFirstRecord,indexOfLastRecord);
     
     useEffect(()=>{
         dispatch(getPlaces());
@@ -36,7 +41,7 @@ const MainPage = () =>{
     const matchFavourite = useCallback((id)=> favourite.places.filter((place)=>place._id === id).length > 0,[favourite.places]);
 
     const getPlaceTable = () => {
-        return places.map((place,i)=>
+        return currentPlaces.map((place,i)=>
          (
             <tr key={place._id} >
                         <td>{i+1}</td>
@@ -56,8 +61,12 @@ const MainPage = () =>{
         )
      )
     }
+
+    const numOfRecords = useMemo(()=> places.length,[currentPlaces]);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
     
-    const placeTable = useMemo(()=> getPlaceTable(),[places,desc,dispatch,favourite.places]);
+    const placeTable = useMemo(()=> getPlaceTable(),[places,desc,dispatch,favourite.places,currentPlaces]);
 
     const refreshHandler = () =>{
         setRefresh((prev) => prev + 1)
@@ -105,6 +114,7 @@ const MainPage = () =>{
                 </Dropdown.Menu>
                 </Dropdown>
             </div>
+            <div className="ml-auto mr-auto">Total: {numOfRecords}</div>
             <Table style={{width:width*0.7}} className="my-4" striped bordered hover>
                 <thead>
                     <tr>
@@ -118,6 +128,7 @@ const MainPage = () =>{
                     {placeTable}
                 </tbody>
             </Table>
+            <RecordPagination totalRecords={places.length} recordPerPage={recordPerPage} paginate={paginate} />
            <div>Last updated at {places.length > 0 ? places[0].updateTime : null}</div> 
           { isAdmin && <Button variant="success" className="my-4 mb-4" onClick={refreshHandler} >Refresh</Button> }
        </div>

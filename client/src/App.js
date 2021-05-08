@@ -9,6 +9,7 @@ import { AccountBox } from "./components/accountBox";
 import PrivateRoute from './routes/PrivateRoute';
 import AdminRoute from './routes/AdminRoute';
 import User from './screens/User'
+import NoMatch from './routes/NoMatch'
 
 const AppContainer = styled.div`
   width: 100%;
@@ -39,6 +40,7 @@ function App() {
         <PrivateRoute path='/profile' comp={User} />
         <PrivateRoute exact path='/' comp={MainPage} />
         <AdminRoute exact path='/manage' comp={Manage} />
+        <Route path='*' component={NoMatch} />
       </Switch>
     </Router>
     </>
