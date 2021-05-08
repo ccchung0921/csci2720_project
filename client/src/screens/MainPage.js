@@ -114,7 +114,7 @@ const MainPage = () =>{
                 </Dropdown.Menu>
                 </Dropdown>
             </div>
-            <div className="ml-auto mr-auto">Total: {numOfRecords}</div>
+            <div className="ml-auto mr-auto">Total: {numOfRecords} {numOfRecords > 1 ? 'hospitals':'hospital'}</div>
             <Table style={{width:width*0.7}} className="my-4" striped bordered hover>
                 <thead>
                     <tr>
