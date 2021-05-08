@@ -23,6 +23,7 @@ const MainPage = () =>{
     const auth = JSON.parse(localStorage.getItem('auth'));
     const userId = auth?._id;
     const isAdmin = useMemo(()=> auth != null && auth?.isAdmin);
+    const [field,setField] = useState('name');
     
     useEffect(()=>{
         dispatch(getPlaces());
@@ -60,7 +61,6 @@ const MainPage = () =>{
 
     const refreshHandler = () =>{
         setRefresh((prev) => prev + 1)
-        console.log(refresh)
     }
 
     const onChangeHandler = (e) =>{ 
@@ -70,7 +70,7 @@ const MainPage = () =>{
 
     const onSubmitHandler = (e) =>{
         e.preventDefault();
-        dispatch(getFilter(state));
+        dispatch(getFilter(field, state));
     }
     
     const asc = () =>{
@@ -87,7 +87,11 @@ const MainPage = () =>{
         <div style={{height:height}} className="d-flex flex-column align-items-center my-4">
             <Map places={places}/>
             <div className="d-flex my-4">
-                <Form className='d-flex' onSubmit={onSubmitHandler}>
+                    <Form className='d-flex' onSubmit={onSubmitHandler}>
+                    <Form.Control className="mr-3" as="select" onChange={(e)=> setField(e.target.value)}>
+                    <option value="name" selected>Name</option>
+                    <option value="waiting_time">Waiting Time</option>
+                    </Form.Control>
                     <Form.Control placeholder="Search..." type="text" onChange={onChangeHandler} />
                     <Button className="mx-2" variant="primary" type="submit"><GoSearch /></Button>
                 </Form>

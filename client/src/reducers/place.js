@@ -27,8 +27,9 @@ export default  (places = [], action) => {
             });
             return descResult;
         case 'GET_FILTER':
+            console.log(action.data,action.payload)
             let filterResult = places.filter((place)=>
-                place.name.toLowerCase().includes(action.payload.toLowerCase())
+                place[action.data].toLowerCase().includes(action.payload.toLowerCase())
             )
             return filterResult;
         default:

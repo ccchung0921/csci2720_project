@@ -54,4 +54,4 @@ export const adminUpdatePlace = (id,updated) => async(dispatch) =>{
 
 export const getAsc = () => async(dispatch) => dispatch({type: 'GET_ASC'})
 export const getDesc = () => async(dispatch) => dispatch({type: 'GET_DESC'})
-export const getFilter = (filter) => async(dispatch) => dispatch({type: 'GET_FILTER',payload:filter})
+export const getFilter = (field,filter) => async(dispatch) => dispatch({type: 'GET_FILTER',payload:filter, data:field})
