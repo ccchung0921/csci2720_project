@@ -102,7 +102,7 @@ const MainPage = () =>{
                     <option value="waiting_time">Waiting Time</option>
                     </Form.Control>
                     <Form.Control placeholder="Search..." type="text" onChange={onChangeHandler} />
-                    <Button className="mx-2" variant="primary" type="submit"><GoSearch /></Button>
+                    <Button className="mx-2" style={{backgroundColor:'rgb(241, 196, 15)',borderColor:'rgb(241, 196, 15)'}} type="submit"><GoSearch /></Button>
                 </Form>
                 <Dropdown>
                 <Dropdown.Toggle variant="info" id="dropdown-basic">
