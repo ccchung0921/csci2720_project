@@ -57,7 +57,7 @@ export function SignupForm(props) {
     <BoxContainer>
       <FormContainer onSubmit={onSubmitHandler}>
         <Input name="fullName" type="text" placeholder="Full Name" onChange={onChangeHandler} required />
-        <Input name="username" type="email" placeholder="Email" onChange={onChangeHandler} required/>
+        <Input name="username" type="text" placeholder="Username" onChange={onChangeHandler} required/>
         <Input name="password" type="password" placeholder="Password" onChange={onChangeHandler} required/>
         <Input name="confirmPassword" type="password" placeholder="Confirm Password" onChange={onChangeHandler} required/>
         <SubmitButton id="signup" className="d-none" type="submit">Signup</SubmitButton>

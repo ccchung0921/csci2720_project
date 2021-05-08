@@ -19,7 +19,7 @@ const UserComment = () =>{
     const getCommentList = () =>{
         return comments.map((comment)=>{
             return(
-                <Card  onClick={()=> history.push(`/place/${comment.place._id}`)} className="p-3 textButton" key={comment}>
+                <Card  onClick={()=> history.push(`/place/${comment.place._id}`)} className="p-3 textButton" key={comment._id}>
                     <Card.Title>
                         {comment.place.name}
                     </Card.Title>
@@ -34,11 +34,16 @@ const UserComment = () =>{
         })
     }
 
+    const isEmpty = useMemo(()=> comments.length === 0 ,[comments])
+
     const commentList = useMemo(()=> getCommentList(),[comments])
    
     return(
         <>
-        {commentList}
+        {isEmpty?
+        <p>No comments</p>
+        :
+        commentList}
         </>
     )
 }

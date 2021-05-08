@@ -1,6 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import {useDispatch,useSelector} from 'react-redux';
-import {Card,Button,Row,Col} from 'react-bootstrap';
+import {Card,Row,Col} from 'react-bootstrap';
 import {adminGetUsers,adminDeleteUser} from '../actions/user';
 import {IoTrashBinSharp} from 'react-icons/io5';
 import {GrUpdate} from 'react-icons/gr';

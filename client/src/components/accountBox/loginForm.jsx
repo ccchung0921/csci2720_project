@@ -41,7 +41,7 @@ export function LoginForm(props) {
   return (
     <BoxContainer>
       <FormContainer onSubmit={onSubmitHandler}>
-        <Input name="username" type="email" placeholder="Email Address" onChange={onChangeHandler} required/>
+        <Input name="username" type="text" placeholder="Username" onChange={onChangeHandler} required/>
         <Input name="password" type="password" placeholder="Password" onChange={onChangeHandler}  required/>
         <SubmitButton id="submit" className="d-none" type="submit">Signin</SubmitButton>
       </FormContainer>

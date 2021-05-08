@@ -32,10 +32,6 @@ const MainPage = () =>{
         dispatch(getFavouritePlaces(userId));
     },[dispatch])
 
-    const detectLogout = useCallback(()=>{
-        history.push('/login')
-    },[auth])
-
     const matchFavourite = useCallback((id)=> favourite.places.filter((place)=>place._id === id).length > 0,[favourite.places]);
 
     const getPlaceTable = () => {

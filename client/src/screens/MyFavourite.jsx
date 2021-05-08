@@ -30,6 +30,7 @@ const MyFavourite = () =>{
         ))
     }
 
+    const isEmpty = useMemo(()=>places.length === 0);
 
     const placeList = useMemo(()=> getPlaceTable(),[places])
 
@@ -40,6 +41,9 @@ const MyFavourite = () =>{
                             <span className="sr-only" >Loading...</span>
             </Spinner>
                 :
+            isEmpty?
+            <p>No favourites</p>
+            :
              placeList
             }
        </>

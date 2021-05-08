@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo} from 'react'
-import {Accordion,Card,Spinner,Button} from 'react-bootstrap';
+import {Accordion,Card,Button} from 'react-bootstrap';
 import {useDispatch,useSelector} from 'react-redux';
 import {getComment} from '../actions/comment'
 import CommentForm from './CommentForm'
@@ -21,7 +21,6 @@ const CommentSection = ({placeId,width}) =>{
                     <Card.Text style={{fontSize:14}} className="text-muted" >{comment.creator.fullName}</Card.Text>
                     <Card.Title style={{fontSize:16}} >{comment.content}</Card.Title>
                     <Card.Text style={{fontSize:14}} className="d-flex justify-content-end text-muted">{moment(comment.createdAt).fromNow()}</Card.Text>
-
                 </Card>
             )
         })
